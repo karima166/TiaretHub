@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* ── MOBILE FIXES ── */
+@media (max-width: 768px) {
+
+  /* Hide hero stats on small screens */
+  .hero-stats {
+    display: none !important;
+  }
+
+  /* Browse page — stack sidebar above cards */
+  .browse-layout {
+    flex-direction: column !important;
+  }
+
+  .browse-sidebar {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Worker profile header — stack vertically */
+  .profile-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  /* Auth page — smaller padding */
+  .auth-card {
+    padding: 32px 20px !important;
+  }
+}
