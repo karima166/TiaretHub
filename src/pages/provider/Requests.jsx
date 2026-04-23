@@ -5,8 +5,8 @@ import SectionTitle from "../../components/ui/SectionTitle";
 import { C, F } from "../../styles/theme";
 import { MOCK_PROVIDERS, MOCK_REQUESTS } from "../../data/mockData";
 
-export default function Requests() {
-  const provider = MOCK_PROVIDERS[0]; // Karim Boudiaf
+export default function Requests({ user }) {
+  const provider = MOCK_PROVIDERS.find(p => p.email === user?.email) || MOCK_PROVIDERS[0];
   const myRequests = MOCK_REQUESTS.filter(r => r.provider === provider.name || r.provider === null);
 
   return (
@@ -34,7 +34,7 @@ export default function Requests() {
                   <div style={{ padding: 12, display: "flex", flexDirection: "column", gap: 8 }}>
                     {r.tasks.map((t, idx) => (
                       <div key={idx} style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
-                        <span style={{ color: C.dark }}><b>{t.qty || t.quantity}x</b> {t.name}</span>
+                        <span style={{ color: C.dark }}><b>{t.qty || t.quantity || 1}x</b> {t.name}</span>
                         <span style={{ fontWeight: 700, color: C.primary }}>{t.price || t.unit_price} DA</span>
                       </div>
                     ))}
@@ -65,7 +65,15 @@ export default function Requests() {
             </div>
           </Card>
         ))}
+        {myRequests.length === 0 && (
+          <div style={{ textAlign: "center", padding: "60px 20px", color: C.muted, background: C.white, borderRadius: 16, border: `1px dashed ${C.gray}` }}>
+            <div style={{ fontSize: 40, marginBottom: 12 }}>📬</div>
+            <div style={{ fontWeight: 700, fontSize: 16, color: C.dark }}>No requests found</div>
+            <div style={{ fontSize: 14, marginTop: 4 }}>You don't have any incoming requests at the moment.</div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
+

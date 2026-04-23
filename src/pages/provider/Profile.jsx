@@ -7,17 +7,17 @@ import Badge from "../../components/ui/Badge";
 import { C, F, ACCOUNT_STATUS_CONFIG } from "../../styles/theme";
 import { MOCK_PROVIDERS } from "../../data/mockData";
 
-export default function Profile() {
-  const provider = MOCK_PROVIDERS[0]; // Karim Boudiaf
+export default function Profile({ user }) {
+  const provider = MOCK_PROVIDERS.find(p => p.email === user?.email) || MOCK_PROVIDERS[0];
   const [form, setForm] = useState({
     firstName: provider.first_name,
     lastName: provider.last_name,
     phone: provider.phone,
     bio: provider.bio,
     experienceYears: provider.experience_years,
-    city: provider.location.city,
-    region: provider.location.region,
-    address: provider.location.address,
+    city: provider.location?.city || "",
+    region: provider.location?.region || "",
+    address: provider.location?.address || "",
     isAvailable: provider.is_available,
   });
 
@@ -48,7 +48,7 @@ export default function Profile() {
         <Card>
           <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 24 }}>
             <div style={{ width: 80, height: 80, borderRadius: "50%", background: C.primary, color: C.white, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, fontWeight: 800 }}>
-              {form.firstName[0]}{form.lastName[0]}
+              {(form.firstName || " ")[0]}{(form.lastName || " ")[0]}
             </div>
             <div>
                <Button size="sm" variant="outline">Upload Image</Button>
@@ -116,9 +116,9 @@ export default function Profile() {
 
           <Card>
             <SectionTitle>Service Categories</SectionTitle>
-            <div style={{ fontSize: 12, color: C.muted, marginBottom: 12 }}>Manage the categories linked via your provider_category table.</div>
+            <div style={{ fontSize: 12, color: C.muted, marginBottom: 12 }}>Manage your linked professional categories.</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
-              {provider.categories.map((c) => (
+              {provider.categories?.map((c) => (
                 <span key={c.id} style={{ padding: "6px 14px", borderRadius: 20, background: C.blueLt, color: C.blue, fontSize: 12, fontWeight: 700 }}>
                   📂 {c.name}
                 </span>
@@ -151,3 +151,4 @@ export default function Profile() {
     </div>
   );
 }
+

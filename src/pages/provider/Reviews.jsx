@@ -1,7 +1,7 @@
 import AvisInterface from "../../components/ui/AvisInterface";
 import { C, F } from "../../styles/theme";
 
-export default function Reviews({ currentUser }) {
+export default function Reviews({ user }) {
   return (
     <div>
       <div style={{ marginBottom: 24 }}>
@@ -10,7 +10,7 @@ export default function Reviews({ currentUser }) {
       </div>
 
       {/* Integrate the powerful interface specifying the role */}
-      <AvisInterface role="prestataire" currentUser={currentUser} />
+      <AvisInterface role="prestataire" currentUser={user} />
     </div>
   );
 }

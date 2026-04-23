@@ -29,7 +29,7 @@ export default function ProviderLayout({ user, onLogout, onHome }) {
 
   return (
     <DashboardLayout navItems={NAV} active={active} setActive={setActive} user={{ name: displayName, role: "Service Provider", initials }} onLogout={onLogout} onHome={onHome}>
-      <Section />
+      <Section user={user} setActive={setActive} />
     </DashboardLayout>
   );
 }

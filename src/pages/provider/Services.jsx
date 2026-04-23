@@ -7,8 +7,8 @@ import Toggle from "../../components/ui/Toggle";
 import { C, F, SERVICE_STATUS_CONFIG } from "../../styles/theme";
 import { MOCK_PROVIDERS, SERVICE_TASKS_LIBRARY } from "../../data/mockData";
 
-export default function Services() {
-  const provider = MOCK_PROVIDERS[0]; // Karim Boudiaf
+export default function Services({ user }) {
+  const provider = MOCK_PROVIDERS.find(p => p.email === user?.email) || MOCK_PROVIDERS[0];
   const [services, setServices] = useState(provider.services);
   const [expandedId, setExpandedId] = useState(provider.services?.[0]?.id || null);
   
@@ -41,7 +41,15 @@ export default function Services() {
   const handleTaskLibrarySelect = (e) => {
     const taskId = e.target.value;
     const service = services.find(s => s.id === activeServiceId);
-    const categoryId = service?.id === 1 ? "PLOMBERIE" : (service?.id === 2 ? "ELECTRICITE" : "CLIMATISATION"); // Mock mapping
+    
+    // Improved dynamic mapping: try to find a matching category in the library
+    const title = (service?.title || "").toUpperCase();
+    let categoryId = "PLOMBERIE"; // Default fallback
+    if (title.includes("ELECTRIC")) categoryId = "ELECTRICITE";
+    else if (title.includes("AC") || title.includes("CLIM")) categoryId = "CLIMATISATION";
+    else if (title.includes("PAINT") || title.includes("PEINT")) categoryId = "PEINTURE";
+    else if (title.includes("CARPENT") || title.includes("MENUISERIE")) categoryId = "MENUISERIE";
+
     const libraryTask = SERVICE_TASKS_LIBRARY[categoryId]?.find(t => t.id === taskId);
     
     if (libraryTask) {
@@ -71,7 +79,7 @@ export default function Services() {
     if (!window.confirm("Delete this task?")) return;
     setServices(prev => prev.map(s => {
       if (s.id !== serviceId) return s;
-      return { ...s, tasks: s.tasks.filter(t => t.id !== taskId) };
+      return { ...s, tasks: (s.tasks || []).filter(t => t.id !== taskId) };
     }));
   };
 
@@ -146,6 +154,9 @@ export default function Services() {
                         </div>
                       </div>
                     ))}
+                    {(!s.tasks || s.tasks.length === 0) && (
+                      <div style={{ textAlign: "center", padding: "20px", color: C.muted, fontSize: 13 }}>No tasks configured for this service.</div>
+                    )}
                   </div>
                 </div>
               )}
@@ -172,12 +183,14 @@ export default function Services() {
                   <option value="">— Choose a standard task —</option>
                   {(() => {
                     const service = services.find(s => s.id === activeServiceId);
-                    // Match the service title to the library key (case-insensitive or mapped)
-                    const libKey = service?.title.toUpperCase().includes("PLUMBING") ? "PLOMBERIE" : 
-                                   service?.title.toUpperCase().includes("ELECTRIC") ? "ELECTRICITE" : 
-                                   service?.title.toUpperCase().includes("AC") ? "CLIMATISATION" : null;
+                    const title = (service?.title || "").toUpperCase();
+                    let libKey = "PLOMBERIE";
+                    if (title.includes("ELECTRIC")) libKey = "ELECTRICITE";
+                    else if (title.includes("AC") || title.includes("CLIM")) libKey = "CLIMATISATION";
+                    else if (title.includes("PAINT") || title.includes("PEINT")) libKey = "PEINTURE";
+                    else if (title.includes("CARPENT") || title.includes("MENUISERIE")) libKey = "MENUISERIE";
                     
-                    const tasks = libKey ? SERVICE_TASKS_LIBRARY[libKey] : [];
+                    const tasks = SERVICE_TASKS_LIBRARY[libKey] || [];
                     return tasks.map(t => (
                       <option key={t.id} value={t.id}>{t.name}</option>
                     ));
@@ -197,11 +210,11 @@ export default function Services() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
               <div>
                 <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: C.muted, marginBottom: 6 }}>Price (DA)</label>
-                <input type="number" value={taskForm.price} onChange={e => setTaskForm({...taskForm, price: parseInt(e.target.value)})} style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: `2px solid ${C.gray}`, fontSize: 14 }} />
+                <input type="number" value={taskForm.price} onChange={e => setTaskForm({...taskForm, price: parseInt(e.target.value) || 0})} style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: `2px solid ${C.gray}`, fontSize: 14 }} />
               </div>
               <div>
                 <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: C.muted, marginBottom: 6 }}>Est. Duration (hrs)</label>
-                <input type="number" value={taskForm.duration} onChange={e => setTaskForm({...taskForm, duration: parseInt(e.target.value)})} style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: `2px solid ${C.gray}`, fontSize: 14 }} />
+                <input type="number" value={taskForm.duration} onChange={e => setTaskForm({...taskForm, duration: parseInt(e.target.value) || 1})} style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: `2px solid ${C.gray}`, fontSize: 14 }} />
               </div>
             </div>
 
@@ -220,3 +233,4 @@ export default function Services() {
     </div>
   );
 }
+

@@ -4,20 +4,18 @@ import Badge from "../../components/ui/Badge";
 import SectionTitle from "../../components/ui/SectionTitle";
 import Stars from "../../components/ui/Stars";
 import Avatar from "../../components/ui/Avatar";
-import { useNavigate } from "react-router-dom";
 import { C, F } from "../../styles/theme";
 import { MOCK_PROVIDERS, MOCK_REQUESTS, MOCK_REVIEWS } from "../../data/mockData";
 
-export default function Overview() {
-  const navigate = useNavigate();
-  const provider = MOCK_PROVIDERS[0]; // Karim Boudiaf
+export default function Overview({ user, setActive }) {
+  const provider = MOCK_PROVIDERS.find(p => p.email === user?.email) || MOCK_PROVIDERS[0];
   const myRequests = MOCK_REQUESTS.filter(r => r.provider === provider.name);
   const myReviews = MOCK_REVIEWS.filter(r => r.provider === provider.name).sort((a,b) => new Date(b.date) - new Date(a.date));
 
   const stats = [
     { icon: "📬", label: "Active Jobs",    value: myRequests.filter(r => ["IN_PROGRESS", "ACCEPTED", "NEGOTIATING"].includes(r.status)).length, color: C.primary, bg: C.primaryLt },
     { icon: "✅", label: "Completed",      value: myRequests.filter(r => r.status === "COMPLETED").length, color: C.green,   bg: C.greenLt },
-    { icon: "⭐", label: "Avg Rating",     value: provider.rating, color: C.yellow, bg: C.yellowLt },
+    { icon: "⭐", label: "Avg Rating",     value: provider.rating_average || provider.rating, color: C.yellow, bg: C.yellowLt },
     { icon: "🛡️", label: "Trust Score",    value: `${provider.trust_score}%`, color: C.blue, bg: C.blueLt },
   ];
 
@@ -40,14 +38,15 @@ export default function Overview() {
                 <Badge statut={r.status} />
               </div>
             ))}
-            <button onClick={() => navigate("/provider/requests")} style={{ padding: "12px", background: "transparent", border: `1px solid ${C.gray}`, borderRadius: 10, fontSize: 12, fontWeight: 700, color: C.muted, cursor: "pointer", marginTop: 8 }}>View All Requests →</button>
+            {myRequests.length === 0 && <div style={{ textAlign: "center", padding: "20px", color: C.muted, fontSize: 13 }}>No requests yet.</div>}
+            <button onClick={() => setActive("requests")} style={{ padding: "12px", background: "transparent", border: `1px solid ${C.gray}`, borderRadius: 10, fontSize: 12, fontWeight: 700, color: C.muted, cursor: "pointer", marginTop: 8 }}>View All Requests →</button>
           </div>
         </Card>
 
         <Card>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
             <SectionTitle style={{ marginBottom: 0 }}>Latest Reviews</SectionTitle>
-            <button onClick={() => navigate("/provider/reviews")} style={{ background: "transparent", border: "none", color: C.primary, fontWeight: 700, fontSize: 12, cursor: "pointer" }}>View All</button>
+            <button onClick={() => setActive("reviews")} style={{ background: "transparent", border: "none", color: C.primary, fontWeight: 700, fontSize: 12, cursor: "pointer" }}>View All</button>
           </div>
           
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -73,3 +72,4 @@ export default function Overview() {
     </div>
   );
 }
+

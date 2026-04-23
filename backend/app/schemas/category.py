@@ -8,7 +8,7 @@ class CategoryOut(BaseModel):
     icon: str
     color: str
     image_url: Optional[str] = None
-    providers_count: int
+    providers_count: Optional[int] = 0
     is_active: bool
     display_order: int
 

@@ -173,11 +173,11 @@ export default function AvisInterface({ role, currentUser }) {
           <div>
             {role === "prestataire" ? (
               <div style={{ background: "rgba(232, 89, 12, 0.05)", border: `1px solid ${C.primaryLt}`, color: C.primary, borderRadius: 12, padding: "12px 16px", marginBottom: 20, fontSize: 13, fontWeight: 500 }}>
-                As a <strong>provider</strong>: you can <strong>reply</strong> to reviews, <strong>like</strong> or <strong>dislike</strong>. You cannot edit clients' comments.
+                As a <b>professional provider</b>, you can reply to client reviews and manage your reputation. Replies are public and help build trust.
               </div>
             ) : (
               <div style={{ background: "rgba(52, 152, 219, 0.05)", border: "1px solid #93C5FD", color: "#2980b9", borderRadius: 12, padding: "12px 16px", marginBottom: 20, fontSize: 13, fontWeight: 500 }}>
-                Here you can see providers' replies to your reviews. You can rate helpfulness, edit or delete your own reviews.
+                Share your experience with the community. Your feedback helps others find reliable professionals.
               </div>
             )}
 
